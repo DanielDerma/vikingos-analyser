@@ -1,5 +1,9 @@
 import { operators } from "..";
 
+const ERROR_MSG = {
+  numberIsOutOfTheRange: "El número está fuera del rango permitido",
+}
+
 function lexico(code) {
   // Define the regular expressions for each token type
   const tokens = [
@@ -25,6 +29,8 @@ function lexico(code) {
   // Convert the matches into an array of tokens
   const result = [];
   let display = "";
+  let isError = false;
+  let errorMsg = "";
 
   let pr = 0;
   let simbolos = 0;
@@ -38,6 +44,11 @@ function lexico(code) {
     const value = match.groups[kind];
     if (kind === "NUMBER") {
       display += " " + value;
+      console.log({ value })
+      if (Number(value) < 0 || Number(value) > 1000000) {
+        isError = true
+        errorMsg = ERROR_MSG['numberIsOutOfTheRange'] + " " + value
+      }
       numeros++;
       result.push(parseInt(value));
     } else if (kind === "LEFT_BRACE") {
@@ -73,6 +84,8 @@ function lexico(code) {
   return {
     display: display.trim(),
     result,
+    isError,
+    errorMsg,
     count: {
       pr,
       simbolos,

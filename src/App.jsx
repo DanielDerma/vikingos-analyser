@@ -8,15 +8,18 @@ function App() {
   const [count, setCount] = useState({});
   const [result, setResult] = useState("The result will display here.");
   const [mode, setMode] = useState("lexical");
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = () => {
     if (mode === "syntactic") {
       const input = syntacticFunction(text.toLowerCase());
-      console.log(input);
       setResult(input);
       setCount({});
     } else {
-      const { display, count } = lexicoFunction(text.toLowerCase());
+      const { display, count, isError, errorMsg } = lexicoFunction(text.toLowerCase());
+      setError(isError);
+      setErrorMsg(errorMsg);
       setResult(display);
       setCount(count);
     }
@@ -25,6 +28,8 @@ function App() {
   const handleClear = () => {
     setText("");
     setCount({});
+    setError(false);
+    setErrorMsg("");
     setResult("The result will display here.");
   };
 
@@ -66,6 +71,9 @@ function App() {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+        {
+          error && (<p className="text-red-600 font-medium">ERROR: {errorMsg}</p>)
+        }
         <div className="mt-2 flex justify-between">
           <div className="">
             <button
